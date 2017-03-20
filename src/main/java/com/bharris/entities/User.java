@@ -28,7 +28,7 @@ public class User {
     @OneToMany
     Collection<Client> client;
 
-    public User(String username, String password, String first_name, String last_name, String email, Client client) throws PasswordStorage.CannotPerformOperationException {
+    public User(String username, String password, String first_name, String email) throws PasswordStorage.CannotPerformOperationException {
         this.username = username;
         setPassword(password);
         this.first_name = first_name;
