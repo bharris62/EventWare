@@ -1,5 +1,7 @@
 package com.bharris.entities;
 
+import com.bharris.utilities.PasswordStorage;
+
 import javax.persistence.*;
 import java.util.Collection;
 
@@ -26,9 +28,9 @@ public class User {
     @OneToMany
     Collection<Client> client;
 
-    public User(String username, String password, String first_name, String last_name, String email, Client client) {
+    public User(String username, String password, String first_name, String last_name, String email, Client client) throws PasswordStorage.CannotPerformOperationException {
         this.username = username;
-        this.password = password;
+        setPassword(password);
         this.first_name = first_name;
         this.email = email;
         //this.client = client;
@@ -56,10 +58,14 @@ public class User {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPassword(String password) throws PasswordStorage.CannotPerformOperationException {
+        this.password = PasswordStorage.createHash(password);
     }
 
+    public boolean verifyPassword(String password) throws PasswordStorage.InvalidHashException, PasswordStorage.CannotPerformOperationException {
+
+        return PasswordStorage.verifyPassword(password, getPasswordHash());
+    }
     public String getFirst_name() {
         return first_name;
     }
@@ -82,5 +88,9 @@ public class User {
 
     public void setClient(Client client) {
         this.client = (Collection<Client>) client;
+    }
+
+    public String getPasswordHash() {
+        return password;
     }
 }
